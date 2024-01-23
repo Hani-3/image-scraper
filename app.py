@@ -4,7 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.request import urlopen as uReq
 import logging
-import pymongo
+from pymongo.mongo_client import MongoClient
 logging.basicConfig(filename="scrapper.log" , level=logging.INFO)
 import os
 
@@ -58,7 +58,16 @@ def index():
                                 img_data.append(mydict)
                                 with open(os.path.join(save_directory, f"{query}_{image_tags.index(image_tag)}.jpg"), "wb") as f:
                                     f.write(image_data)
-                    client = pymongo.MongoClient("mongodb+srv://snshrivas:Snshrivas@cluster0.ln0bt5m.mongodb.net/?retryWrites=true&w=majority")
+                    uri = "mongodb+srv://hanypatel1603:datascience@cluster0.0dm5hfx.mongodb.net/?retryWrites=true&w=majority"
+                    # Create a new client and connect to the server
+                    client = MongoClient(uri)
+
+                    # Send a ping to confirm a successful connection
+                    try:
+                        client.admin.command('ping')
+                        print("Pinged your deployment. You successfully connected to MongoDB!")
+                    except Exception as e:
+                        print(e)
                     db = client['image_scrap']
                     review_col = db['image_scrap_data']
                     review_col.insert_many(img_data)          
